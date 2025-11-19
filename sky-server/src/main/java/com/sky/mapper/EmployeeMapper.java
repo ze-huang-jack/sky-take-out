@@ -20,6 +20,6 @@ public interface EmployeeMapper {
      * @param employee
      * @return
      */
-    Employee insert(Employee employee);
+    void insert(Employee employee);
 
 }
