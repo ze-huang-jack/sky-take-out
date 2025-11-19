@@ -56,7 +56,7 @@ public class DishServiceImpl implements DishService {
 
         Long id = dish.getId();
         List<DishFlavor> dishFlavor = dishDTO.getFlavors();
-        if (dishFlavor != null && dishFlavor.size() > 0) {
+        if (dishFlavor != null && !dishFlavor.isEmpty()) {
             for (DishFlavor df : dishFlavor) {
                 df.setDishId(id);
             }
@@ -85,7 +85,7 @@ public class DishServiceImpl implements DishService {
         Long id = dishDTO.getId();
         dishFlavorMapper.deleteByDishId(id);
         List<DishFlavor> dishFlavor = dishDTO.getFlavors();
-        if (dishFlavor != null && dishFlavor.size() > 0) {
+        if (dishFlavor != null && !dishFlavor.isEmpty()) {
             for (DishFlavor df : dishFlavor) {
                 df.setDishId(id);
             }
@@ -108,13 +108,13 @@ public class DishServiceImpl implements DishService {
     public void deleteBatch(List<Long> ids) {
         for(Long id : ids) {
             Dish dish = dishMapper.getById(id);
-            if(dish.getStatus() == StatusConstant.ENABLE) {
+            if(dish.getStatus().equals(StatusConstant.ENABLE)) {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
         }
 
         List<Long> setMealIds = setMealMapper.getSetMealIdsByDishIds(ids);
-        if(setMealIds != null && setMealIds.size() > 0) {
+        if(setMealIds != null && !setMealIds.isEmpty()) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
 
