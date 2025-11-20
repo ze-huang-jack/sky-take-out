@@ -13,6 +13,6 @@ public class MessageConstant {
     public static final String ALREADY_EXISTS = "用户已存在，不可添加";
     public static final String DISH_ON_SALE = "菜品在售，无法删除";
     public static final String DISH_BE_RELATED_BY_SETMEAL = "菜品与套餐关联，无法删除";
-
-
+    public static final String SETMEAL_ON_SALE = "套餐在售，无法删除";
+    public static final String SETMEAL_ENABLE_FAILED = "套餐内有菜品未起售，套餐起售失败";
 }

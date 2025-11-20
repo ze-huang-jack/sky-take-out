@@ -27,4 +27,6 @@ public interface DishMapper {
     void update(Dish dish);
 
     void deleteById(Long id);
+
+    List<Dish> getBySetmealId(Long id);
 }
