@@ -38,10 +38,10 @@ public class DishController {
     }
 
     @GetMapping("/{id}")
-    public Result<Dish> getById(@PathVariable Long id) {
+    public Result<DishVO> getById(@PathVariable Long id) {
         log.info("根据id查询菜品: {}", id);
-        Dish dish = dishService.getById(id);
-        return Result.success(dish);
+        DishVO dishVO = dishService.getById(id);
+        return Result.success(dishVO);
     }
 
     @GetMapping("/list")

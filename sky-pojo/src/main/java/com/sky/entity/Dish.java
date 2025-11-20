@@ -31,6 +31,7 @@ public class Dish implements Serializable {
     private String description;
     //0 停售 1 起售
     private Integer status;
+
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private Long createUser;
