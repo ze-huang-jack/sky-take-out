@@ -4,7 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
-import com.sky.context.BaseContext;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -12,7 +11,7 @@ import com.sky.entity.DishFlavor;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
-import com.sky.mapper.SetMealMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,7 +30,7 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
     @Autowired
-    private SetMealMapper setMealMapper;
+    private SetmealMapper setmealMapper;
 
     @Override
     public PageResult pageQuery(DishPageQueryDTO queryDTO) {
@@ -75,6 +73,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
@@ -101,6 +100,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(List<Long> ids) {
         for(Long id : ids) {
             Dish dish = dishMapper.getById(id);
@@ -109,7 +109,7 @@ public class DishServiceImpl implements DishService {
             }
         }
 
-        List<Long> setMealIds = setMealMapper.getSetMealIdsByDishIds(ids);
+        List<Long> setMealIds = setmealMapper.getSetmealIdsByDishIds(ids);
         if(setMealIds != null && !setMealIds.isEmpty()) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
