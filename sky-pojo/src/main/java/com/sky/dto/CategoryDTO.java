@@ -1,22 +1,17 @@
 package com.sky.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import java.io.Serializable;
+import lombok.NoArgsConstructor;
 
 @Data
-public class CategoryDTO implements Serializable {
-
-    //主键
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CategoryDTO {
     private Long id;
-
-    //类型 1 菜品分类 2 套餐分类
-    private Integer type;
-
-    //分类名称
     private String name;
-
-    //排序
     private Integer sort;
-
+    private Integer type;
 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.DishMapper">
+    <select id="pageQuery" resultType="com.sky.vo.DishVO">
+        select dish.*, category.name categoryName
+        from dish
+        left join category on dish.category_id = category.id
+        <where>
+            <if test="name != null and name !=''">
+                and dish.name like concat('%', #{name}, '%')
+            </if>
+            <if test="categoryId != null">
+                and dish.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and dish.status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into dish(name, category_id, price, image, description, status,
+                         create_time, update_time, create_user, update_user)
+        VALUES (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status},
+                #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <select id="getById" resultType="com.sky.entity.Dish">
+        select *
+        from dish
+        where id = #{id}
+    </select>
+
+    <select id="listByCategoryId" resultType="com.sky.entity.Dish">
+        select *
+        from dish
+        where category_id = #{categoryId}
+    </select>
+
+    <update id="update">
+        update dish
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="image != null">
+                image = #{image},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete
+        from dish
+        where id = #{id}
+    </delete>
+
+    <select id="getBySetmealId" resultType="com.sky.entity.Dish">
+        select dish.*
+        from dish
+                 left join setmeal_dish on dish.id = setmeal_dish.dish_id
+        where setmeal_dish.setmeal_id = #{setmealId}
+    </select>
+
+</mapper>
