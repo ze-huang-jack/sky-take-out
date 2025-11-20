@@ -16,7 +16,7 @@ public interface DishService {
 
     void save(DishDTO dishDTO);
 
-    Dish getById(Long id);
+    DishVO getById(Long id);
 
     List<Dish> listByCategoryId(Integer categoryId);
 
