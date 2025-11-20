@@ -11,6 +11,7 @@ import com.sky.mapper.CategoryMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,11 +19,9 @@ import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryMapper categoryMapper;
 
-    public CategoryServiceImpl(CategoryMapper categoryMapper) {
-        this.categoryMapper = categoryMapper;
-    }
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Override
     public PageResult pageQuery(CategoryPageQueryDTO pageQueryDTO) {
@@ -38,10 +37,6 @@ public class CategoryServiceImpl implements CategoryService {
         BeanUtils.copyProperties(categoryDTO, category);
 
         category.setStatus(StatusConstant.DISABLE);
-        category.setCreateTime(LocalDateTime.now());
-        category.setUpdateTime(LocalDateTime.now());
-        category.setCreateUser(BaseContext.getCurrentId());
-        category.setUpdateUser(BaseContext.getCurrentId());
 
         categoryMapper.insert(category);
     }
@@ -50,8 +45,6 @@ public class CategoryServiceImpl implements CategoryService {
     public void update(CategoryDTO categoryDTO) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
-        category.setUpdateTime(LocalDateTime.now());
-        category.setUpdateUser(BaseContext.getCurrentId());
         categoryMapper.update(category);
     }
 
@@ -61,8 +54,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .id(id)
                 .status(status)
                 .build();
-        category.setUpdateTime(LocalDateTime.now());
-        category.setUpdateUser(BaseContext.getCurrentId());
         categoryMapper.update(category);
     }
 
