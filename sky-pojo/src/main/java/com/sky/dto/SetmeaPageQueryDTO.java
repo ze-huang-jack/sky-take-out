@@ -5,16 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class GoodsSalesDTO implements Serializable {
-    //商品名称
+public class SetmeaPageQueryDTO {
+    private Long categoryId;
     private String name;
-
-    //销量
-    private Integer number;
+    private Integer page;
+    private Integer pageSize;
+    private Integer status;
 }

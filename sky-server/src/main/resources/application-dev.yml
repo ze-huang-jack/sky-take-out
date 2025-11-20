@@ -6,3 +6,9 @@ sky:
     database: sky_take_out
     username: root
     password: 1234
+
+  alioss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    access-key-id: LTAI5tD96dA3wzkm6AeASiGo
+    access-key-secret: 9uoZx7WUPwqvVhW1bbHuihX5HekvuZ
+    bucket-name: sky-itcast-zehuang
