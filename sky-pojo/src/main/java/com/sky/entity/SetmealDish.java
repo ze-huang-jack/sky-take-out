@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -21,6 +23,7 @@ public class SetmealDish implements Serializable {
 
     private Long id;
     //套餐id
+    @NotNull(message = "setmealId不能为null")
     private Long setmealId;
     //菜品id
     private Long dishId;

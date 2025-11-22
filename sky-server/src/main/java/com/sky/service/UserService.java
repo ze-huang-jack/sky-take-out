@@ -6,5 +6,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
+    /**
+     * 微信登录
+     * @param userLoginDTO
+     * @return
+     */
     User wxlogin(UserLoginDTO userLoginDTO);
 }
