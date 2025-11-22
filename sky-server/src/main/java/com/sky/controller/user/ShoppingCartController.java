@@ -22,7 +22,7 @@ public class ShoppingCartController {
      * 往购物车添加菜品或套餐
      */
     @PostMapping("/add")
-    public Result add(@RequestBody ShoppingCartDTO shoppingCartDTO) {
+    public Result<String> add(@RequestBody ShoppingCartDTO shoppingCartDTO) {
         log.info("添加购物车: {}", shoppingCartDTO);
         shoppingCartService.add(shoppingCartDTO);
         return Result.success();
