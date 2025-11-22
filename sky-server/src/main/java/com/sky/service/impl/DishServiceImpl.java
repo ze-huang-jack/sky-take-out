@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -40,6 +43,11 @@ public class DishServiceImpl implements DishService {
         return new PageResult(pageInfo.getTotal(), pageInfo.getList());
     }
 
+    /**
+     * 新增菜品及其口味
+     *
+     * @param dishDTO
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(DishDTO dishDTO) {
@@ -57,6 +65,12 @@ public class DishServiceImpl implements DishService {
         }
     }
 
+    /**
+     * 根据id查询菜品及其口味
+     *
+     * @param id
+     * @return
+     */
     @Override
     public DishVO getById(Long id) {
         Dish dish = dishMapper.getById(id);
@@ -67,11 +81,22 @@ public class DishServiceImpl implements DishService {
         return dishVO;
     }
 
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
     @Override
     public List<Dish> listByCategoryId(Integer categoryId) {
         return dishMapper.listByCategoryId(categoryId);
     }
 
+    /**
+     * 修改菜品及其口味
+     *
+     * @param dishDTO
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(DishDTO dishDTO) {
@@ -90,34 +115,69 @@ public class DishServiceImpl implements DishService {
         }
     }
 
+    /**
+     * 起售或停售菜品
+     *
+     * @param status
+     * @param id
+     */
     @Override
     public void startOrStop(Integer status, Long id) {
-        Dish dish = Dish.builder()
-                .id(id)
-                .status(status)
-                .build();
+        Dish dish = Dish.builder().id(id).status(status).build();
         dishMapper.update(dish);
     }
 
+    /**
+     * 批量删除菜品及其口味
+     *
+     * @param ids
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteBatch(List<Long> ids) {
-        for(Long id : ids) {
+        for (Long id : ids) {
             Dish dish = dishMapper.getById(id);
-            if(dish.getStatus().equals(StatusConstant.ENABLE)) {
+            // 菜品起售 则无法删除
+            if (dish.getStatus().equals(StatusConstant.ENABLE)) {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
         }
 
         List<Long> setMealIds = setmealMapper.getSetmealIdsByDishIds(ids);
-        if(setMealIds != null && !setMealIds.isEmpty()) {
+        // 有关联的套餐 无法删除
+        if (setMealIds != null && !setMealIds.isEmpty()) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
 
-        for(Long id : ids) {
+        for (Long id : ids) {
             dishMapper.deleteById(id);
             dishFlavorMapper.deleteByDishId(id);
         }
+    }
+
+    /**
+     * 根据分类id查询菜品及其口味
+     *
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public List<DishVO> getByCategoryId(Integer categoryId) {
+        List<Dish> dishes = dishMapper.listByCategoryId(categoryId);
+        if (dishes == null || dishes.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<DishVO> dishVOs = new ArrayList<>();
+        for(Dish dish : dishes) {
+            DishVO dishVO = new DishVO();
+            BeanUtils.copyProperties(dish, dishVO);
+            List<DishFlavor> dishFlavors = dishFlavorMapper.getByDishId(dish.getId());
+            dishVO.setFlavors(dishFlavors);
+            dishVOs.add(dishVO);
+        }
+        return dishVOs;
+
+
     }
 
 

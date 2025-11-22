@@ -80,11 +80,13 @@ public class SetmealServiceImpl implements SetmealService {
     public void deleteBatch(List<Long> ids) {
         for(Long id : ids) {
             Setmeal setmeal = setmealMapper.getById(id);
+            // 套餐起售 则无法删除
             if(setmeal.getStatus().equals(StatusConstant.ENABLE)) {
                 throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
             }
         }
         for(Long id : ids) {
+            // 删除套餐 和 套餐里的菜品
             setmealMapper.deleteById(id);
             setmealDishMapper.deleteBySetmealId(id);
         }
@@ -110,6 +112,7 @@ public class SetmealServiceImpl implements SetmealService {
     @Override
     public void startOrStop(Integer status, Long id) {
         if(status.equals(StatusConstant.ENABLE)) {
+            // 套餐内包含停售的菜品 无法起售
             List<Dish> dishList = dishMapper.getBySetmealId(id);
             if(dishList != null && !dishList.isEmpty()) {
                 for(Dish d : dishList) {
@@ -124,5 +127,10 @@ public class SetmealServiceImpl implements SetmealService {
                 .id(id)
                 .build();
         setmealMapper.update(setmeal);
+    }
+
+    @Override
+    public List<Setmeal> listByCategoryId(Long categoryId) {
+        return setmealMapper.getByCategoryId(categoryId);
     }
 }

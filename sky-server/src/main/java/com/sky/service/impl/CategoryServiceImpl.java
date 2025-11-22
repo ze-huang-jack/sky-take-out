@@ -35,9 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void insert(CategoryDTO categoryDTO) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
-
         category.setStatus(StatusConstant.DISABLE);
-
         categoryMapper.insert(category);
     }
 
@@ -64,6 +62,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> listByType(Integer type) {
+        if (type == null) {
+            return categoryMapper.selectAll();
+        }
         return categoryMapper.listByType(type);
     }
 }
