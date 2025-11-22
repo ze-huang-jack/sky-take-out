@@ -22,4 +22,6 @@ public interface CategoryMapper {
     void delete(Long id);
 
     List<Category> listByType(Integer type);
+
+    List<Category> selectAll();
 }

@@ -54,8 +54,21 @@
     </delete>
 
     <select id="listByType" resultType="com.sky.entity.Category">
-        select *
+        select id,
+               type,
+               name,
+               sort,
+               status,
+               create_time,
+               update_time,
+               create_user,
+               update_user
         from category
         where type = #{type}
+    </select>
+
+    <select id="selectAll" resultType="com.sky.entity.Category">
+        select *
+        from category
     </select>
 </mapper>

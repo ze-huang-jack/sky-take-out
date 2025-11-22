@@ -35,17 +35,12 @@ logging:
 
 sky:
   jwt:
-    # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: this-secret-key-can-actually-be-set-arbitrarily-like-this
-    # 设置jwt过期时间
-    admin-ttl: 7200000000000000000
-    # 设置前端传递过来的令牌名称
+    admin-secret-key: itcast
+    admin-ttl: 7200000
     admin-token-name: token
 
-    user-secret-key: this-secret-key-can-actually-be-set-arbitrarily-like-this-too
-
-    user-ttl: 7200000000000000000
-
+    user-secret-key: itheima
+    user-ttl: 7200000
     user-token-name: authentication
 
   alioss:

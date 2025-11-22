@@ -1,0 +1,136 @@
+package com.sky.service.impl;
+
+import com.sky.constant.MessageConstant;
+import com.sky.context.BaseContext;
+import com.sky.dto.ShoppingCartDTO;
+import com.sky.entity.Dish;
+import com.sky.entity.Setmeal;
+import com.sky.entity.ShoppingCart;
+import com.sky.exception.UserNotLoginException;
+import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetmealMapper;
+import com.sky.mapper.ShoppingCartMapper;
+import com.sky.service.ShoppingCartService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class ShoppingCartServiceImpl implements ShoppingCartService {
+    @Autowired
+    private ShoppingCartMapper shoppingCartMapper;
+    @Autowired
+    private DishMapper dishMapper;
+    @Autowired
+    private SetmealMapper setmealMapper;
+
+    /**
+     * 添加购物车
+     *
+     * @param shoppingCartDTO
+     */
+    @Override
+    public void add(ShoppingCartDTO shoppingCartDTO) {
+        //只能查询自己的购物车数据
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new UserNotLoginException("用户未登录，无法添加购物车");
+        }
+        ShoppingCart shoppingCart = new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
+        shoppingCart.setUserId(userId);
+
+        //判断当前商品是否在购物车中
+        List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
+
+        if (shoppingCartList != null && shoppingCartList.size() == 1) {
+            //如果已经存在，就更新数量，数量加1
+            shoppingCart = shoppingCartList.get(0);
+            shoppingCart.setNumber(shoppingCart.getNumber() + 1);
+            shoppingCartMapper.updateNumberById(shoppingCart);
+        } else {
+            //如果不存在，插入数据，数量就是1
+            //判断当前添加到购物车的是菜品还是套餐
+            Long dishId = shoppingCartDTO.getDishId();
+            if (dishId != null) {
+                //添加到购物车的是菜品
+                Dish dish = dishMapper.getById(dishId);
+                shoppingCart.setName(dish.getName());
+                shoppingCart.setImage(dish.getImage());
+                shoppingCart.setAmount(dish.getPrice());
+            } else {
+                //添加到购物车的是套餐
+                Setmeal setmeal = setmealMapper.getById(shoppingCartDTO.getSetmealId());
+                shoppingCart.setName(setmeal.getName());
+                shoppingCart.setImage(setmeal.getImage());
+                shoppingCart.setAmount(setmeal.getPrice());
+            }
+            shoppingCart.setNumber(1);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            shoppingCartMapper.insertShoppingCart(shoppingCart);
+        }
+    }
+
+    /**
+     * 查看购物车
+     * @return
+     */
+    @Override
+    public List<ShoppingCart> listShoppingCart() {
+        return shoppingCartMapper.list(ShoppingCart
+                .builder()
+                .userId(BaseContext.getCurrentId())
+                .build());
+    }
+
+    /**
+     * 清空该用户的购物车
+     */
+    @Override
+    public void clean() {
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new UserNotLoginException("用户未登录，无法清空购物车");
+        }
+        shoppingCartMapper.deleteAll(userId);
+    }
+
+    /**
+     * 删除该用户购物车内的一件商品
+     * @param shoppingCartDTO
+     */
+    @Override
+    public void sub(ShoppingCartDTO shoppingCartDTO) {
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new UserNotLoginException("用户未登录，无法删除购物车");
+        }
+        // 设置查询条件：当前用户 + 菜品/套餐
+        ShoppingCart queryCondition = new ShoppingCart();
+        queryCondition.setUserId(userId);
+        queryCondition.setDishId(shoppingCartDTO.getDishId());
+        queryCondition.setSetmealId(shoppingCartDTO.getSetmealId());
+        // 条件查询
+        // existCartList 里绝对只有一条记录
+        // 查询条件是 userId + dishId/setmealId（用户 ID + 菜品 ID / 套餐 ID）
+        // 这个组合在业务上是唯一的：
+        List<ShoppingCart> existCartList = shoppingCartMapper.list(queryCondition);
+//        // TODO 异常处理
+//        if(existCartList.isEmpty()) {
+//            throw new
+//        }
+        ShoppingCart existCart = existCartList.get(0);
+        Integer currentNumber = existCart.getNumber();
+        // 如果大于等于2 就number-1
+        if(currentNumber >= 2) {
+            existCart.setNumber(currentNumber - 1);
+            shoppingCartMapper.updateNumberById(existCart);
+        } else {
+            // 如果number==1 就直接删除
+            shoppingCartMapper.deleteById(existCart.getId());
+        }
+    }
+}

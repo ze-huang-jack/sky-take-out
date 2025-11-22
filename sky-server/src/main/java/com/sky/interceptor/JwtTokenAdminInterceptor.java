@@ -34,6 +34,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
      * @throws Exception
      */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("admin 拦截器触发，当前请求路径：{}", request.getRequestURI());
         //判断当前拦截到的是Controller的方法还是其他资源
         if (!(handler instanceof HandlerMethod)) {
             //当前拦截到的不是动态方法，直接放行
