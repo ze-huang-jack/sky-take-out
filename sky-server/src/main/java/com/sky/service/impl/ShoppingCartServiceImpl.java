@@ -5,6 +5,7 @@ import com.sky.dto.ShoppingCartDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
 import com.sky.entity.ShoppingCart;
+import com.sky.exception.UserNotLoginException;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.mapper.ShoppingCartMapper;
@@ -32,10 +33,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      */
     @Override
     public void add(ShoppingCartDTO shoppingCartDTO) {
+        //只能查询自己的购物车数据
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new UserNotLoginException("用户未登录，无法添加购物车");
+        }
         ShoppingCart shoppingCart = new ShoppingCart();
         BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
-        //只能查询自己的购物车数据
-        shoppingCart.setUserId(BaseContext.getCurrentId());
+        shoppingCart.setUserId(userId);
 
         //判断当前商品是否在购物车中
         List<ShoppingCart> shoppingCartList = shoppingCartMapper.list(shoppingCart);
