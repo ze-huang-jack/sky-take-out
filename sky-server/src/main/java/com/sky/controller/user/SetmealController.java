@@ -7,6 +7,7 @@ import com.sky.service.SetmealService;
 import com.sky.vo.DishItemVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class SetmealController {
      * 根据分类id查询套餐
      */
     @GetMapping("/list")
+    @Cacheable(cacheNames = "setmealCache", key = "#categoryId") // key: setmealCache::100
     public Result<List<Setmeal>> list(Long categoryId) {
         log.info("根据分类id查询套餐: {}", categoryId);
         // 条件查询需求分类下起售的套餐
