@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("userShopController")
 @Slf4j
 @RequestMapping("/user/shop")
-public class shopController {
+public class ShopController {
     public static final String KEY = "SHOP_STATUS";
     @Autowired
     private RedisTemplate redisTemplate;
