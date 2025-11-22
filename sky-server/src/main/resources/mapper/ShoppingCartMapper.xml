@@ -28,4 +28,15 @@
         </where>
         order by create_time desc
     </select>
+
+    <delete id="deleteAll">
+        delete
+        from shopping_cart
+        where user_id = #{userId}
+    </delete>
+    <delete id="deleteById">
+        delete
+        from shopping_cart
+        where id = #{id}
+    </delete>
 </mapper>
