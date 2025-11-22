@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.ShoppingCartDTO;
 import com.sky.entity.Dish;
@@ -83,5 +84,53 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .builder()
                 .userId(BaseContext.getCurrentId())
                 .build());
+    }
+
+    /**
+     * 清空该用户的购物车
+     */
+    @Override
+    public void clean() {
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new UserNotLoginException("用户未登录，无法清空购物车");
+        }
+        shoppingCartMapper.deleteAll(userId);
+    }
+
+    /**
+     * 删除该用户购物车内的一件商品
+     * @param shoppingCartDTO
+     */
+    @Override
+    public void sub(ShoppingCartDTO shoppingCartDTO) {
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new UserNotLoginException("用户未登录，无法删除购物车");
+        }
+        // 设置查询条件：当前用户 + 菜品/套餐
+        ShoppingCart queryCondition = new ShoppingCart();
+        queryCondition.setUserId(userId);
+        queryCondition.setDishId(shoppingCartDTO.getDishId());
+        queryCondition.setSetmealId(shoppingCartDTO.getSetmealId());
+        // 条件查询
+        // existCartList 里绝对只有一条记录
+        // 查询条件是 userId + dishId/setmealId（用户 ID + 菜品 ID / 套餐 ID）
+        // 这个组合在业务上是唯一的：
+        List<ShoppingCart> existCartList = shoppingCartMapper.list(queryCondition);
+//        // TODO 异常处理
+//        if(existCartList.isEmpty()) {
+//            throw new
+//        }
+        ShoppingCart existCart = existCartList.get(0);
+        Integer currentNumber = existCart.getNumber();
+        // 如果大于等于2 就number-1
+        if(currentNumber >= 2) {
+            existCart.setNumber(currentNumber - 1);
+            shoppingCartMapper.updateNumberById(existCart);
+        } else {
+            // 如果number==1 就直接删除
+            shoppingCartMapper.deleteById(existCart.getId());
+        }
     }
 }

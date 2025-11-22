@@ -29,4 +29,14 @@ public interface ShoppingCartMapper {
     @Update("update shopping_cart set number = #{number} where id = #{id}")
     void updateNumberById(ShoppingCart shoppingCart);
 
+    /**
+     * 删除该用户的所有购物车数据
+     */
+    void deleteAll(Long userId);
+
+    /**
+     * 通过id删除购物车数据
+     * @param id
+     */
+    void deleteById(Long id);
 }
