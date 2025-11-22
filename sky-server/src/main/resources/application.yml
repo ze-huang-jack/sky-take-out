@@ -41,11 +41,8 @@ sky:
     admin-ttl: 7200000000000000000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
-
     user-secret-key: this-secret-key-can-actually-be-set-arbitrarily-like-this-too
-
     user-ttl: 7200000000000000000
-
     user-token-name: authentication
 
   alioss:
