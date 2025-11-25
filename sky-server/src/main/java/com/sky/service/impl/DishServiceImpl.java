@@ -74,6 +74,9 @@ public class DishServiceImpl implements DishService {
     @Override
     public DishVO getById(Long id) {
         Dish dish = dishMapper.getById(id);
+        if(dish == null) {
+            throw new RuntimeException("dish not found");
+        }
         List<DishFlavor> dishFlavors = dishFlavorMapper.getByDishId(id);
         DishVO dishVO = new DishVO();
         BeanUtils.copyProperties(dish, dishVO);
