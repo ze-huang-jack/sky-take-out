@@ -29,4 +29,13 @@ public interface OrderMapper {
     void update(Orders orders);
 
     Page<Orders> pageQuery(OrdersPageQueryDTO queryDTO);
+
+    /**
+     * 根据id查询订单
+     * @param id
+     */
+    @Select("select * from orders where id = #{id}")
+    Orders getById(Long id);
+
+    Integer countStatus(Integer toBeConfirmed);
 }

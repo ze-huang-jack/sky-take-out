@@ -40,4 +40,6 @@ public interface ShoppingCartMapper {
      * @param id
      */
     void deleteById(Long id);
+
+    void insertBatch(List<ShoppingCart> shoppingCartList);
 }

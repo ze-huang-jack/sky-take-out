@@ -1,5 +1,6 @@
 package com.sky.vo;
 
+import com.sky.entity.Dish;
 import com.sky.entity.OrderDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,5 +64,7 @@ public class OrderVO implements Serializable {
     //餐具数量状态  1按餐量提供  0选择具体数量
     private Integer tablewareStatus;
 
-    List<OrderDetail> orderDetailList = new ArrayList<>();
+    private String orderDishes;
+
+    private List<OrderDetail> orderDetailList = new ArrayList<>();
 }
