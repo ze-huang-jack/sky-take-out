@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2
-          key: m2-${{ hashFiles('backend/**/pom.xml') }}
+          key: m2-${{ hashFiles('sky-server/**/pom.xml') }}
           restore-keys: |
             m2-
 
