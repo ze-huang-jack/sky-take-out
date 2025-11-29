@@ -1,10 +1,10 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.TreeCodec;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.*;
 import com.sky.entity.*;
@@ -13,10 +13,10 @@ import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
+import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,10 +73,10 @@ public class OrderServiceImpl implements OrderService {
         order.setConsignee(addressBook.getConsignee());
         order.setNumber(String.valueOf(System.currentTimeMillis()));
         order.setUserId(userId);
-//        order.setStatus(Orders.PENDING_PAYMENT);
-        order.setStatus(Orders.TO_BE_CONFIRMED);
-        order.setPayStatus(Orders.PAID);
-//        order.setPayStatus(Orders.UN_PAID);
+        order.setStatus(Orders.PENDING_PAYMENT);
+//        order.setStatus(Orders.TO_BE_CONFIRMED);
+//        order.setPayStatus(Orders.PAID);
+        order.setPayStatus(Orders.UN_PAID);
         order.setOrderTime(LocalDateTime.now());
 
         orderMapper.insertOrder(order);
@@ -254,10 +254,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void cancel(OrderCancelDTO orderCancelDTO) {
+    public void cancel(OrdersCancelDTO ordersCancelDTO) {
         // 根据id查询订单
-        log.info("订单的id为: {}", orderCancelDTO.getId());
-        Orders ordersDB = orderMapper.getById(orderCancelDTO.getId());
+        log.info("订单的id为: {}", ordersCancelDTO.getId());
+        Orders ordersDB = orderMapper.getById(ordersCancelDTO.getId());
         if(ordersDB == null) {
             throw new OrderBusinessException("订单not found");
         }
@@ -275,10 +275,10 @@ public class OrderServiceImpl implements OrderService {
 
         // 管理端取消订单需要退款，根据订单id更新订单状态、取消原因、取消时间
         Orders orders = new Orders();
-        orders.setId(orderCancelDTO.getId());
+        orders.setId(ordersCancelDTO.getId());
         orders.setStatus(Orders.CANCELLED);
         orders.setPayStatus(Orders.REFUND);
-        orders.setCancelReason(orderCancelDTO.getCancelReason());
+        orders.setCancelReason(ordersCancelDTO.getCancelReason());
         orders.setCancelTime(LocalDateTime.now());
         orderMapper.update(orders);
     }
@@ -299,6 +299,21 @@ public class OrderServiceImpl implements OrderService {
         orders.setStatus(Orders.DELIVERY_IN_PROGRESS);
 
         orderMapper.update(orders);
+    }
+
+    @Override
+    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+
+        JSONObject jsonObject = new JSONObject();
+
+        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
+            throw new OrderBusinessException("该订单已支付");
+        }
+
+        OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
+        vo.setPackageStr(jsonObject.getString("package"));
+
+        return vo;
     }
 
 
