@@ -1,0 +1,16 @@
+on: push
+
+jobs:
+    test:
+      runs-on: windows-latest
+      steps:
+        - run: echo "This is a test job running on Windows."
+    job2:
+      runs-on: ubuntu-latest
+      steps:
+        - run: echo "This is a second test job running on Ubuntu."
+    job3:
+        runs-on: macos-latest
+        steps:
+          - run: pwd
+          - run: ls
