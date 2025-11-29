@@ -257,7 +257,9 @@ public class OrderServiceImpl implements OrderService {
     public void cancel(OrderCancelDTO orderCancelDTO) {
         // 根据id查询订单
         Orders ordersDB = orderMapper.getById(orderCancelDTO.getId());
-
+        if(ordersDB == null) {
+            throw new OrderBusinessException("订单not found");
+        }
         //支付状态
         Integer payStatus = ordersDB.getPayStatus();
         if (payStatus == 1) {
