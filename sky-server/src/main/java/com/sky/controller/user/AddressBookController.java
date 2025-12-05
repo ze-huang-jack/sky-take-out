@@ -64,7 +64,7 @@ public class AddressBookController {
      * 根据id删除地址
      */
     @DeleteMapping
-    public Result<String> delete(Long id) {
+    public Result<String> delete(@RequestParam Long id) {
         log.info("根据id删除地址: {}", id);
         addressBookService.deleteById(id);
         return Result.success();

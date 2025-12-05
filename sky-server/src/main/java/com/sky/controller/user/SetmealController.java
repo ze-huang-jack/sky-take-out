@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class SetmealController {
      */
     @GetMapping("/list")
     @Cacheable(cacheNames = "setmealCache", key = "#categoryId") // key: setmealCache::100
-    public Result<List<Setmeal>> list(Long categoryId) {
+    public Result<List<Setmeal>> list(@RequestParam Long categoryId) {
         log.info("根据分类id查询套餐: {}", categoryId);
         // 条件查询需求分类下起售的套餐
         Setmeal setmeal = new Setmeal();

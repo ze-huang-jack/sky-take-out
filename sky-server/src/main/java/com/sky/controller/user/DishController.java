@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class DishController {
     private RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping("/list")
-    public Result<List<DishVO>> getByCategoryId(Long categoryId) {
+    public Result<List<DishVO>> getByCategoryId(@RequestParam Long categoryId) {
         log.info("根据分类id查询菜品: {}", categoryId);
         // 构造redis中的key, 规则：dish_分类id
         String key = "dish_" + categoryId;

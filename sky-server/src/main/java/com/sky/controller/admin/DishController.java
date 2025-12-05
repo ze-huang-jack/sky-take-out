@@ -69,7 +69,7 @@ public class DishController {
     }
 
     @PostMapping("/status/{status}")
-    public Result startOrStop(@PathVariable Integer status, Long id) {
+    public Result startOrStop(@PathVariable Integer status, @RequestParam Long id) {
         log.info("起售或停售菜品: {} {}", status, id);
         dishService.startOrStop(status, id);
         //将所有的菜品缓存数据清理掉，所有以dish_开头的key

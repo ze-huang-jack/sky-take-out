@@ -42,14 +42,14 @@ public class CategoryController {
     }
 
     @PostMapping("/status/{status}")
-    public Result startOrStop(@PathVariable Integer status, Long id) {
+    public Result startOrStop(@PathVariable Integer status, @RequestParam Long id) {
         log.info("启用或禁用分类: {} {}", status, id);
         categoryService.startOrStop(status, id);
         return Result.success();
     }
 
     @DeleteMapping
-    public Result delete(Long id) {
+    public Result delete(@RequestParam Long id) {
         log.info("根据id删除分类: {}", id);
         categoryService.delete(id);
         return Result.success();
