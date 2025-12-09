@@ -52,7 +52,6 @@ public class WebSocketServer {
 
     /**
      * 群发
-     *
      * @param message
      */
     public void sendToAllClient(String message) {
