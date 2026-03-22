@@ -10,15 +10,11 @@ const router = useRouter()
 const auth = useAuthStore()
 
 const form = reactive({
-  username: '',
-  password: ''
+  username: 'admin',
+  password: '123456'
 })
 
 const onSubmit = async () => {
-  if (!form.username || !form.password) {
-    ElMessage.warning('请输入账号和密码')
-    return
-  }
   loading.value = true
   try {
     const res = await loginApi(form)
