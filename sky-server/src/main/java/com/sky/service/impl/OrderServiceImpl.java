@@ -248,10 +248,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void reject(OrdersRejectionDTO ordersRejectionDTO) {
+        if (ordersRejectionDTO.getId() == null) {
+            throw new OrderBusinessException("id为null");
+        }
+
         Orders order = orderMapper.getById(ordersRejectionDTO.getId());
         // 订单只有存在且状态为2（待接单）才可以拒单
         if (order == null || !order.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
-            log.info("{} {}", order, order.getStatus());
+            log.info("拒单状态校验失败, order: {}", order);
             throw new OrderBusinessException("订单状态错误");
         }
         Integer payStatus = order.getPayStatus();
