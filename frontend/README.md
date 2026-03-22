@@ -30,11 +30,12 @@ npm run dev
 
 默认地址：<http://localhost:5173>
 
+<<<<<<< codex/request-custom-frontend-code-setup-a78i5j
 默认测试账号（已在登录页自动填充）：
 
 - 用户名：`admin`
 - 密码：`123456`
-
+>>>>>>> main
 ## 接口约定
 
 开发环境使用 Vite 代理：
